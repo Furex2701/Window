@@ -31,7 +31,24 @@ const char* Window::WindowClass::GetName() noexcept
 	return wndClassName;
 }
 
-HINSTANCE Window::WindowClass::GetInstance() noexcept; // may not be declared outside its class
+HINSTANCE Window::WindowClass::GetInstance() noexcept
 {
 	return wndClass.hInst;
+}
+
+Window::Window(int width, int height, const char* name) noexcept
+{
+	RECT wr;
+	wr.left = 100;
+	wr.right = width + wr.left;
+	wr.top = 100;
+	wr.bottom = height + wr.top;
+	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
+	hWnd = CreateWindow(WindowClass::GetName(), name,
+		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+		CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
+		nullptr, nullptr, WindowClass::GetInstance(), this);
+
+	ShowWindow(hWnd, SW_SHOWDEFAULT);
 }
